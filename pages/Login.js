@@ -15,9 +15,14 @@ import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import isEmail from 'validator/lib/isEmail';
 import isEmpty from 'validator/lib/isEmpty';
-import { signin } from '../api/auth';
+import { apiObject } from '../api/auth';
 import { showLoading } from './../helpers/loading';
 import { showErrorMsg } from './../helpers/message';
+import { useEffect } from 'react';
+import { isAuthenticated } from '../helpers/auth';
+import { setAuthentication } from './../helpers/auth';
+import { getToken } from '../helpers/cookies';
+import { getLocalStorage } from '../helpers/localStorage';
 
 export const LoginPage = ({ navigation }) => {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -30,8 +35,13 @@ export const LoginPage = ({ navigation }) => {
     check_textInputChange: false,
     secureTextEntry: true
   });
-
   const { email, password, errorMsg, loading } = data;
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigation.navigate('Home');
+    }
+  }, []);
 
   // const changeText = (name, val) => {
   //   if (val.length !== 0) {
@@ -93,29 +103,21 @@ export const LoginPage = ({ navigation }) => {
     else {
       const formData = { email, password };
       setData({ ...data, loading: true });
-      signin(formData)
-        .then((response) => {
+      apiObject.signin(formData)
+        .then(async (response) => {
+          // const resData = response.json()
           setData({
             email: "",
             password: "",
             errorMsg: "",
             loading: false
           })
-          navigation.navigate('Home');
-          //set cookies here
-          // setAuthentication(response.data.token, response.data.user);
-          // const redirect = search.split('=')[1];
-          // console.log(redirect);
-          // if (isAuthenticated() && isAuthenticated().role === 1) {
-          //   //For admin
-          //   navigate('/admin/dashboard');
-          // }
-          // else if (isAuthenticated() && isAuthenticated().role === 0 && !redirect) {
-          //   //For user
-          //   navigate('/user/dashboard');
-          // } else if (isAuthenticated() && isAuthenticated().role === 0 && redirect) {
-          //   navigate('/shipping');
-          // }
+          console.log(response.data.token);
+          console.log(response.data.user);
+          // set cookies here
+          setAuthentication(response.data.token, response.data.user);
+          const tokn = await getToken()
+          console.log("token -------> ", tokn);
         })
         .catch((err) => {
           setData({

@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { RegisterPage } from './../pages/RegisterPage';
 import { LoginPage } from './../pages/Login';
 import { Shipping } from '../pages/Shipping';
+import { Shop } from './../pages/Shop';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export const AuthNavigation = () => {
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="Shipping" component={Shipping} />
+            <Stack.Screen name="Shop" component={Shop} />
         </Stack.Navigator>
     )
 }

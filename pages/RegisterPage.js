@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Platform,
   ScrollView,
@@ -13,12 +13,13 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import { signup } from './../api/auth';
+import { apiObject } from './../api/auth';
 import isEmail from 'validator/lib/isEmail';
 import isEmpty from 'validator/lib/isEmpty';
 import equals from 'validator/lib/equals';
 import { showErrorMsg, showSuccessMsg } from './../helpers/message';
 import { showLoading } from './../helpers/loading';
+import { isAuthenticated } from '../helpers/auth';
 
 export const RegisterPage = ({ navigation }) => {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -37,6 +38,13 @@ export const RegisterPage = ({ navigation }) => {
     confirmSecureTextEntry: true
   });
   const {username, email, password, confirm_password, successMsg, errorMsg, loading} = data;
+
+  // useEffect(() => {
+  //   if (isAuthenticated()) {
+  //     //For admin
+  //     navigation.navigate('Shop');
+  //   }
+  // }, []);
 
   const textInputChange = (val) => {
     if (val.length !== 0) {
@@ -128,7 +136,7 @@ export const RegisterPage = ({ navigation }) => {
       const formData = { username, email, password };
       setData({ ...data, loading: true });
       //sending data to server
-      signup(formData)
+      apiObject.signup(formData)
         .then((response) => {
           setData({
             username: '',

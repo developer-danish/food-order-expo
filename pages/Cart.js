@@ -150,7 +150,7 @@ export const CartPage = ({navigation}) => {
         <Text>Total: </Text>
         <Text>$5.0</Text>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Shipping')} style={styles.checkoutBtn}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login', {screen: 'Shipping'})} style={styles.checkoutBtn}>
         <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>
       </TouchableOpacity>
     </ScrollView>
