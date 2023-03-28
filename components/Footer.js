@@ -1,16 +1,14 @@
-import React from 'react';
+import React from "react";
 import {
   StyleSheet,
   Text,
   TouchableHighlight,
   useColorScheme,
   View,
-} from 'react-native';
+} from "react-native";
 
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -19,12 +17,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   sectionDescription: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: "400",
   },
   footerItem: {
     backgroundColor: "white",
@@ -39,38 +37,82 @@ const styles = StyleSheet.create({
   },
   menuitemSelected: {
     fontWeight: "700",
-    color: "#000",
-  }
+    color: "#ffc739",
+  },
 });
 
 export const Footer = ({ selectedMenu, onMenuChange }) => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <View
       style={{
         flexDirection: "row",
         height: 60,
-        padding: 0
+        padding: 0,
       }}
     >
-      <View style={styles.footerItem}  >
-        <TouchableHighlight onPress={() => { onMenuChange("home") }} >
-          <Text style={selectedMenu == "home" ? styles.menuitemSelected : styles.menuitem}>Home</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.footerItem} >
-        <TouchableHighlight onPress={() => { onMenuChange("orders") }} >
-          <Text style={selectedMenu == "orders" ? styles.menuitemSelected : styles.menuitem}>Orders</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.footerItem} >
-        <TouchableHighlight onPress={() => { onMenuChange("cart") }} >
-          <Text style={selectedMenu == "cart" ? styles.menuitemSelected : styles.menuitem}>Cart</Text>
+      <View style={styles.footerItem}>
+        <TouchableHighlight
+          onPress={() => {
+            onMenuChange("home");
+          }}
+        >
+          <Text
+            style={
+              selectedMenu == "home" ? styles.menuitemSelected : styles.menuitem
+            }
+          >
+            Home
+          </Text>
         </TouchableHighlight>
       </View>
       <View style={styles.footerItem}>
-        <TouchableHighlight onPress={() => { onMenuChange("login") }} >
-          <Text style={selectedMenu == "login" ? styles.menuitemSelected : styles.menuitem}>Login</Text>
+        <TouchableHighlight
+          onPress={() => {
+            onMenuChange("orders");
+          }}
+        >
+          <Text
+            style={
+              selectedMenu == "orders"
+                ? styles.menuitemSelected
+                : styles.menuitem
+            }
+          >
+            Orders
+          </Text>
+        </TouchableHighlight>
+      </View>
+      <View style={styles.footerItem}>
+        <TouchableHighlight
+          onPress={() => {
+            onMenuChange("cart");
+          }}
+        >
+          <Text
+            style={
+              selectedMenu == "cart" ? styles.menuitemSelected : styles.menuitem
+            }
+          >
+            Cart
+          </Text>
+        </TouchableHighlight>
+      </View>
+      <View style={styles.footerItem}>
+        <TouchableHighlight
+          onPress={() => {
+            onMenuChange("login");
+          }}
+        >
+          <Text
+            style={
+              selectedMenu == "login"
+                ? styles.menuitemSelected
+                : styles.menuitem
+            }
+          >
+            Login
+          </Text>
         </TouchableHighlight>
       </View>
     </View>

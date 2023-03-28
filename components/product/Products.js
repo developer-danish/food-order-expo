@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   ImageBackground,
@@ -7,87 +7,108 @@ import {
   Text,
   useColorScheme,
   View,
-} from 'react-native';
+} from "react-native";
 // import type { Node } from 'react';
-import { Button } from 'react-native-elements';
+import { Button } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { apiObject } from "../../api/auth";
+import { BaseImageUrl } from "../../helpers/Constants";
 
 const productStyle = StyleSheet.create({
   productContainer: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 4,
     margin: 16,
-    borderColor: "#DCDCDC"
+    borderColor: "#DCDCDC",
   },
   productImage: {
-    height: 100
+    height: 150,
   },
   productName: {
     padding: 8,
     color: "black",
-    fontWeight: "700"
+    fontWeight: "700",
+    fontSize: 16,
   },
   priceRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
   },
   prodDesc: {
-    padding: 8
+    padding: 8,
   },
   btnContainer: {
-    flexDirection: 'row',
-    // justifyContent: "space-around",
+    flexDirection: "row",
   },
   btnWrapper: {
     padding: 8,
-    flex: 1
+    flex: 1,
   },
   btn: {
     justifyContent: "center",
     alignItems: "center",
-  }
+    backgroundColor: "#ffc739",
+    padding: 12,
+    borderRadius: 4,
+  },
+  btnText: {
+    fontWeight: "700",
+    color: "#fff",
+  },
 });
-const products = [
-  {
-    image: require('../../assets/foodnew.jpeg'),
-    name: "Red Tomato", price: "3",
-    desc: "Prod desc"
-  },
-  {
-    image: require('../../assets/banner7.jpg'),
-    name: "Red Tomato", price: "3",
-    desc: "Prod desc"
-  },
-  {
-    image: require('../../assets/banner5.jpg'),
-    name: "Red Tomato", price: "3",
-    desc: "Prod desc"
-  },
-];
 
 const ProductCard = ({ product }) => {
   return (
-    <View style={productStyle.productContainer} >
-      <ImageBackground source={product.image} style={productStyle.productImage} />
-      <Text style={productStyle.productName}>{product.name}</Text>
-      <View style={productStyle.priceRow} >
-        <Text>$ {product.price}</Text>
+    <View style={productStyle.productContainer}>
+      <ImageBackground
+        source={{ uri: BaseImageUrl + product.fileName }}
+        style={productStyle.productImage}
+      />
+      <Text style={productStyle.productName}>{product.productName}</Text>
+      <View style={productStyle.priceRow}>
+        <Text>$ {product.productPrice}</Text>
         <Text>In Stock</Text>
       </View>
-      <Text style={productStyle.prodDesc}>{product.desc}</Text>
+      <Text style={productStyle.prodDesc}>{product.productDesc}</Text>
       <View style={productStyle.btnContainer}>
         <View style={productStyle.btnWrapper}>
-          <Button style={productStyle.btn} title={"View Product"} />
+          <TouchableOpacity style={productStyle.btn}>
+            <Text style={productStyle.btnText}>View Product</Text>
+          </TouchableOpacity>
         </View>
         <View style={productStyle.btnWrapper}>
-          <Button style={productStyle.btn} title={"Add to Cart"} />
+          <TouchableOpacity style={productStyle.btn}>
+            <Text style={productStyle.btnText}>Add to Cart</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </View>);
-}
+    </View>
+  );
+};
 
 export const Products = ({ children, title }) => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
+  const getProducts = () => {
+    apiObject
+      .get("api/food")
+      .then(async (response) => {
+        // const resData = response.json()
+        console.log(response.data.products[0]);
+        setProducts(response.data.products);
+      })
+      .catch((err) => {
+        console.log(err);
+        // setData({
+        //   ...data,
+        //   errorMsg: err.response.data.errorMessage,
+        //   loading: false,
+        // });
+      });
+  };
 
   return (
     // <ScrollView>
@@ -108,17 +129,16 @@ export const Products = ({ children, title }) => {
     //     );
     //   })}
     // </ScrollView>
-    <View style={{
-      flex: 1,
-      backgroundColor: 'white',
-    }}>
-
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <FlatList
         scrollEnabled={false}
         data={products}
-        renderItem={({ item }) => (
-          <ProductCard key={item} product={item} />
-        )}
+        renderItem={({ item }) => <ProductCard key={item} product={item} />}
         //Setting the number of column
         numColumns={1}
         keyExtractor={(item, index) => index}
