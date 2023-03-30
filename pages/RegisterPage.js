@@ -270,11 +270,11 @@ export const RegisterPage = ({ navigation }) => {
                 {
                   marginTop: 15,
                   backgroundColor: "#fff",
-                  borderColor: "#009387",
+                  borderColor: "#ffc739",
                 },
               ]}
             >
-              <Text style={[styles.textSign, { color: "#009387" }]}>
+              <Text style={[styles.textSign, { color: "#ffc739" }]}>
                 Sign In
               </Text>
             </TouchableOpacity>
@@ -288,7 +288,7 @@ export const RegisterPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#009387",
+    backgroundColor: "#ffc739",
   },
   header: {
     flex: 1,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: "#009387",
+    backgroundColor: "#ffc739",
   },
   textSign: {
     fontSize: 18,
