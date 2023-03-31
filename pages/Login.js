@@ -114,8 +114,6 @@ export const LoginPage = ({ navigation }) => {
           });
           // set cookies here
           setAuthentication(response.data.token, response.data.user);
-          const tokn = await getToken();
-          console.log("token -------> ", tokn);
         })
         .catch((err) => {
           setData({

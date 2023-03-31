@@ -97,7 +97,6 @@ export const Products = ({ children, title }) => {
       .get("api/food")
       .then(async (response) => {
         // const resData = response.json()
-        console.log(response.data.products[0]);
         setProducts(response.data.products);
       })
       .catch((err) => {

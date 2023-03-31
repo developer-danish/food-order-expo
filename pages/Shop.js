@@ -21,8 +21,6 @@ export const Shop = () => {
     apiObject
       .get("api/food")
       .then(async (response) => {
-        // const resData = response.json()
-        // console.log(response.data.products[0]);
         setProducts(response.data.products);
       })
       .catch((err) => {
@@ -36,7 +34,6 @@ export const Shop = () => {
       .post("api/filter/search", { type: "text", query: val })
       .then(async (response) => {
         // const resData = response.json()
-        console.log(response.data.products[1]);
         setProducts(response.data.products);
       })
       .catch((err) => {
