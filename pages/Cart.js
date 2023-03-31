@@ -122,20 +122,37 @@ const styles = StyleSheet.create({
 });
 const products = [
   {
-    title: "Product name 1",
-    image: require("../assets/foodnew.jpeg"),
-    status: "Pending",
-    price: "3",
-    count: 1,
+    __v: 0,
+    _id: "62ff2c1a0e681cda4b03c519",
+    createdAt: "2022-08-19T06:22:18.691Z",
+    fileName: "1660890138681.jpg",
+    productCategory: {
+      _id: "62ff2a810e681cda4b03c514",
+      category: "Palav",
+    },
+    productDesc: "Good for health",
+    productName: "Mixed Food",
+    productPrice: 5,
+    productQuantity: 0,
+    updatedAt: "2022-10-26T17:30:02.127Z",
   },
   {
-    title: "Product name 2",
-    image: require("../assets/foodnew.jpeg"),
-    status: "Pending",
-    price: "2",
-    count: 3,
+    __v: 0,
+    _id: "639eb8bc1d458ead0bdf9f2a",
+    createdAt: "2022-12-18T06:52:45.009Z",
+    fileName: "1671346364977.jpg",
+    productCategory: {
+      _id: "62ff2c5c0e681cda4b03c524",
+      category: "Burger",
+    },
+    productDesc: "Delicious Food",
+    productName: "Burger",
+    productPrice: 2,
+    productQuantity: 12,
+    updatedAt: "2022-12-18T06:52:45.009Z",
   },
 ];
+
 export const CartPage = ({ navigation }) => {
   const isDarkMode = useColorScheme() === "dark";
 
@@ -190,6 +207,12 @@ export const CartPage = ({ navigation }) => {
     // ]);
   }, [isFocused]);
 
+  const proceedToCheckout = () => {
+    if (products.length > 0) {
+      navigation.navigate("Shipping");
+    }
+  };
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -205,7 +228,7 @@ export const CartPage = ({ navigation }) => {
         <Text>$5.0</Text>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Shipping")}
+        onPress={() => proceedToCheckout()}
         style={styles.checkoutBtn}
       >
         <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>

@@ -11,7 +11,8 @@ import * as Animatable from "react-native-animatable";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { useState } from "react";
-import { isEmpty } from "validator/lib/isEmpty";
+import isEmpty from "validator/lib/isEmpty";
+import { showErrorMsg } from "./../helpers/message";
 
 export const Shipping = ({ navigation }) => {
   const [data, setData] = useState({
@@ -20,31 +21,47 @@ export const Shipping = ({ navigation }) => {
     city: "",
     state: "",
     phone: "",
+    errorMsg: false,
   });
-  const { address, address2, city, state, phone } = data;
+  const { address, address2, city, state, phone, errorMsg } = data;
 
   const textChange = (name, val) => {
     setData({
       ...data,
+      errorMsg: "",
       [name]: val,
     });
   };
 
   const confirmOrder = () => {
     console.log(data);
-    setData({
-      address: "",
-      address2: "",
-      city: "",
-      state: "",
-      phone: "",
-    });
-    navigation.navigate("Payment");
+    if (
+      isEmpty(address) ||
+      isEmpty(address2) ||
+      isEmpty(city) ||
+      isEmpty(state) ||
+      isEmpty(phone)
+    ) {
+      setData({
+        ...data,
+        errorMsg: "All fields are required",
+      });
+    } else {
+      setData({
+        address: "",
+        address2: "",
+        city: "",
+        state: "",
+        phone: "",
+        errorMsg: "",
+      });
+      navigation.navigate("Payment");
+    }
   };
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <View style={styles.header}></View>
+        <View style={styles.header}>{errorMsg && showErrorMsg(errorMsg)}</View>
         <Animatable.View animation="fadeInUpBig" style={styles.footer}>
           <Text style={styles.text_footer}>Address</Text>
           <View style={styles.action}>
