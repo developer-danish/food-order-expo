@@ -58,7 +58,7 @@ const productStyle = StyleSheet.create({
   },
 });
 
-const ProductCard = ({ product }) => {
+export const ProductCard = ({ product }) => {
   return (
     <View style={productStyle.productContainer}>
       <ImageBackground

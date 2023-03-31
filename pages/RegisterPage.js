@@ -47,12 +47,12 @@ export const RegisterPage = ({ navigation }) => {
     loading,
   } = data;
 
-  // useEffect(() => {
-  //   if (isAuthenticated()) {
-  //     //For admin
-  //     navigation.navigate('Shop');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (isAuthenticated()) {
+      //For admin
+      navigation.navigate("Shop", { screen: "Shop" });
+    }
+  }, []);
 
   const textInputChange = (val) => {
     if (val.length !== 0) {

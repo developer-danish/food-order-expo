@@ -7,28 +7,51 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import RadioGroup from "react-native-radio-buttons-group";
 
-export const Payment = () => {
+export const Payment = ({ navigation }) => {
+  const [radioButtons, setRadioButtons] = useState([
+    {
+      id: "1", // acts as primary key, should be unique and non-empty string
+      label: "Debit Card",
+      value: "0",
+      disabled: true,
+      containerStyle: {
+        display: "flex",
+        justifyContent: "space-around",
+        width: "100%",
+        paddingLeft: 20,
+        marginBottom: 20,
+      },
+    },
+    {
+      id: "2",
+      label: "Pay on Delivery",
+      value: "1",
+      selected: true,
+      containerStyle: {
+        display: "flex",
+        justifyContent: "space-around",
+        width: "100%",
+        paddingLeft: 25,
+        marginBottom: 20,
+      },
+    },
+  ]);
+  function onPressRadioButton(radioButtonsArray) {
+    setRadioButtons(radioButtonsArray);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.button}>
-        <TouchableOpacity disabled style={styles.signIn}>
-          <Text style={styles.textSign}>Debit Card</Text>
-        </TouchableOpacity>
+        <RadioGroup radioButtons={radioButtons} onPress={onPressRadioButton} />
+
         <TouchableOpacity
-          style={[
-            styles.signIn,
-            {
-              marginTop: 15,
-              backgroundColor: "#ffc739",
-              borderColor: "#ffc739",
-            },
-          ]}
+          onPress={() => navigation.navigate("Orders")}
+          style={styles.signIn}
         >
-          <Text style={[styles.textSign, { color: "#fff" }]}>
-            Pay on Delivery
-          </Text>
+          <Text style={styles.textSign}>Continue</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -45,18 +68,19 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   signIn: {
-    width: "95%",
+    width: "90%",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: "#fff",
-    borderColor: "#ffc739",
+    backgroundColor: "#ffc739",
+    borderColor: "#000",
   },
   textSign: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#ffc739",
+    color: "#fff",
   },
+  label: {},
 });
