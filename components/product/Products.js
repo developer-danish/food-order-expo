@@ -98,6 +98,7 @@ export const Products = ({ children, title }) => {
       .then(async (response) => {
         // const resData = response.json()
         setProducts(response.data.products);
+        // console.log(response.data.products);
       })
       .catch((err) => {
         console.log(err);
