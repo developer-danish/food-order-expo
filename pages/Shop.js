@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { apiObject } from "./../api/auth";
-import { ProductCard } from "./../components/product/Products";
+import { ProductCard, Products } from "./../components/product/Products";
 
 export const Shop = () => {
   const [text, setText] = useState("");
@@ -35,13 +35,14 @@ export const Shop = () => {
       .then(async (response) => {
         // const resData = response.json()
         setProducts(response.data.products);
+        console.log(response.data.products);
       })
       .catch((err) => {
         console.log(err);
       });
   };
   return (
-    <>
+    <ScrollView>
       <View style={styles.upperContainer}>
         <TextInput
           value={text}
@@ -50,14 +51,15 @@ export const Shop = () => {
           placeholder="Search food here"
         />
       </View>
-      <FlatList
+      {/* <FlatList
         data={products}
         renderItem={({ item }) => <ProductCard key={item} product={item} />}
         //Setting the number of column
         numColumns={1}
         keyExtractor={(item, index) => index}
-      />
-    </>
+      /> */}
+      <Products propProducts={products} />
+    </ScrollView>
   );
 };
 

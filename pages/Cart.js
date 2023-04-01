@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect } from "react";
 import { useState } from "react";
 import {
   Button,
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -13,8 +14,10 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { getLocalStorage, setLocalStorage } from "../helpers/localStorage";
 import { useIsFocused } from "@react-navigation/native";
+import { BaseImageUrl } from "../helpers/Constants";
+import { getToken } from "../helpers/cookies";
 
-const ProductRow = ({ product }) => {
+const ProductRow = ({ product, onChangeQuantity, removeProduct }) => {
   return (
     <View style={styles.ordersRow}>
       <View style={styles.headerRowItem}>
@@ -30,16 +33,31 @@ const ProductRow = ({ product }) => {
         <Text>$ {product.productPrice}</Text>
       </View>
       <View style={styles.plusMinusRow}>
-        <TouchableOpacity style={styles.plusMinusBtn}>
+        <TouchableOpacity
+          onPress={() => {
+            onChangeQuantity(-1);
+          }}
+          style={styles.plusMinusBtn}
+        >
           <Text style={styles.plusMinusBtnText}>-</Text>
         </TouchableOpacity>
-        <Text style={styles.count}>{product.count}</Text>
-        <TouchableOpacity style={styles.plusMinusBtn}>
+        <Text style={styles.count}>{product.productQuantity}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            onChangeQuantity(1);
+          }}
+          style={styles.plusMinusBtn}
+        >
           <Text style={styles.plusMinusBtnText}>+</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.headerRowItem}>
-        <TouchableOpacity style={styles.removeBtn}>
+        <TouchableOpacity
+          onPress={() => {
+            removeProduct(product);
+          }}
+          style={styles.removeBtn}
+        >
           <Text style={styles.removeBtnText}>Remove</Text>
         </TouchableOpacity>
       </View>
@@ -48,10 +66,16 @@ const ProductRow = ({ product }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    height: Dimensions.get("window").height * 0.8,
+  },
   ordersRow: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    marginVertical: 4,
   },
   headerRowItem: {
     padding: 8,
@@ -59,6 +83,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: "700",
     color: "#000",
+    textAlign: "left",
   },
   orderImage: {
     height: 30,
@@ -105,9 +130,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   checkoutBtn: {
-    backgroundColor: "#000",
-    borderRadius: 4,
-    marginVertical: 16,
+    minHeight: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: "#ffc739",
+    borderColor: "#000",
+    marginTop: 30,
   },
   checkoutBtnText: {
     color: "#fff",
@@ -119,39 +149,20 @@ const styles = StyleSheet.create({
     color: "#000",
     marginVertical: 10,
   },
+  centerView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: Dimensions.get("window").height,
+  },
+  largeBtn: {
+    paddingHorizontal: 70,
+    paddingVertical: 20,
+  },
+  summaryContainer: {
+    padding: 30,
+  },
 });
-const products = [
-  {
-    __v: 0,
-    _id: "62ff2c1a0e681cda4b03c519",
-    createdAt: "2022-08-19T06:22:18.691Z",
-    fileName: "1660890138681.jpg",
-    productCategory: {
-      _id: "62ff2a810e681cda4b03c514",
-      category: "Palav",
-    },
-    productDesc: "Good for health",
-    productName: "Mixed Food",
-    productPrice: 5,
-    productQuantity: 0,
-    updatedAt: "2022-10-26T17:30:02.127Z",
-  },
-  {
-    __v: 0,
-    _id: "639eb8bc1d458ead0bdf9f2a",
-    createdAt: "2022-12-18T06:52:45.009Z",
-    fileName: "1671346364977.jpg",
-    productCategory: {
-      _id: "62ff2c5c0e681cda4b03c524",
-      category: "Burger",
-    },
-    productDesc: "Delicious Food",
-    productName: "Burger",
-    productPrice: 2,
-    productQuantity: 12,
-    updatedAt: "2022-12-18T06:52:45.009Z",
-  },
-];
 
 export const CartPage = ({ navigation }) => {
   const isDarkMode = useColorScheme() === "dark";
@@ -161,56 +172,57 @@ export const CartPage = ({ navigation }) => {
     padding: 16,
   };
   const [cart, setCart] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
   const isFocused = useIsFocused();
 
   const loadCartData = async () => {
     let data = await getLocalStorage("cart");
-    console.log(data);
-    setCart(data);
+    let token = await getToken("token");
+    setIsLogin(!!token);
+    console.log(!!token);
+    // data && setCart(data);
+    if (data && data.length > 0) {
+      setCart(data);
+    } else {
+      setCart([]);
+    }
   };
 
   useEffect(() => {
     if (isFocused) {
       loadCartData();
     }
-    // setLocalStorage("cart", [
-    //   {
-    //     __v: 0,
-    //     _id: "62ff2c1a0e681cda4b03c519",
-    //     createdAt: "2022-08-19T06:22:18.691Z",
-    //     fileName: "1660890138681.jpg",
-    //     productCategory: {
-    //       _id: "62ff2a810e681cda4b03c514",
-    //       category: "Palav",
-    //     },
-    //     productDesc: "Good for health",
-    //     productName: "Mixed Food",
-    //     productPrice: 5,
-    //     productQuantity: 0,
-    //     updatedAt: "2022-10-26T17:30:02.127Z",
-    //   },
-    //   {
-    //     __v: 0,
-    //     _id: "639eb8bc1d458ead0bdf9f2a",
-    //     createdAt: "2022-12-18T06:52:45.009Z",
-    //     fileName: "1671346364977.jpg",
-    //     productCategory: {
-    //       _id: "62ff2c5c0e681cda4b03c524",
-    //       category: "Burger",
-    //     },
-    //     productDesc: "Delicious Food",
-    //     productName: "Burger",
-    //     productPrice: 2,
-    //     productQuantity: 12,
-    //     updatedAt: "2022-12-18T06:52:45.009Z",
-    //   },
-    // ]);
   }, [isFocused]);
 
   const proceedToCheckout = () => {
-    if (products.length > 0) {
+    if (cart.length > 0) {
       navigation.navigate("Shipping");
     }
+  };
+  const updateCart = (product) => {
+    const updatedCartItems = cart.map((item) =>
+      product._id === item._id ? product : item
+    );
+    setCart(updatedCartItems);
+    setLocalStorage("cart", updatedCartItems);
+  };
+  const onChangeQuantity = (product, count) => {
+    if (count < 0) {
+      if (product.productQuantity > 1) {
+        updateCart({
+          ...product,
+          productQuantity: product.productQuantity - 1,
+        });
+      }
+    } else {
+      updateCart({ ...product, productQuantity: product.productQuantity + 1 });
+    }
+  };
+
+  const removeProduct = (product) => {
+    const updatedCartItems = cart.filter((item) => item._id !== product._id);
+    setCart(updatedCartItems);
+    setLocalStorage("cart", updatedCartItems);
   };
 
   return (
@@ -218,21 +230,59 @@ export const CartPage = ({ navigation }) => {
       contentInsetAdjustmentBehavior="automatic"
       style={backgroundStyle}
     >
-      {cart.map((product, index) => {
-        return <ProductRow key={index} product={product} />;
-      })}
-      <Text style={styles.summaryTitle}>Cart Summary</Text>
-      <Text>({cart.length}) items</Text>
-      <View style={styles.totalRow}>
-        <Text>Total: </Text>
-        <Text>$5.0</Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => proceedToCheckout()}
-        style={styles.checkoutBtn}
-      >
-        <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>
-      </TouchableOpacity>
+      {cart.length > 0 ? (
+        <View style={styles.container}>
+          <View>
+            {cart.map((product, index) => {
+              return (
+                <ProductRow
+                  key={index}
+                  product={product}
+                  onChangeQuantity={(count) => {
+                    onChangeQuantity(product, count);
+                  }}
+                  removeProduct={removeProduct}
+                />
+              );
+            })}
+          </View>
+
+          <View style={styles.summaryContainer}>
+            <Text style={styles.summaryTitle}>Cart Summary</Text>
+            <Text>({cart.length}) items</Text>
+            <View style={styles.totalRow}>
+              <Text>Total: </Text>
+              <Text>
+                $
+                {cart.length > 0
+                  ? cart
+                      .map((item) => item.productPrice * item.productQuantity)
+                      .reduce((sum, item) => sum + item)
+                  : 0}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() =>
+                isLogin ? proceedToCheckout() : navigation.navigate("Login")
+              }
+              style={styles.checkoutBtn}
+            >
+              <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View style={styles.centerView}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            style={{ ...styles.checkoutBtn, ...styles.largeBtn }}
+          >
+            <Text style={{ ...styles.checkoutBtnText, fontSize: 20 }}>
+              Explore products
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 };

@@ -114,6 +114,7 @@ export const LoginPage = ({ navigation }) => {
           });
           // set cookies here
           setAuthentication(response.data.token, response.data.user);
+          navigation.navigate("Home");
         })
         .catch((err) => {
           setData({

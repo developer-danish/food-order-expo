@@ -19,25 +19,43 @@ import {
   getLocalStorage,
 } from "../helpers/localStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 export const Profile = ({ navigation }) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
   const loadData = async () => {
     let data = await isAuthenticated();
+    console.log(data);
     setIsLogin(!!data);
+    if (!!data) {
+      setUser(data);
+    }
   };
+
+  const isFocused = useIsFocused();
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isFocused) loadData();
+  }, [isFocused]);
   return (
     <View style={styles.container}>
-      <Text>{"fdf"}</Text>
+      <View>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.orderImage}
+            source={require("../assets/person.jpg")}
+          />
+        </View>
+
+        <Text style={styles.name}>Welcome {user && user.username}</Text>
+        <Text style={styles.name}>Email: {user && user.email}</Text>
+      </View>
       <View style={styles.button}>
         <TouchableOpacity
           onPress={() => {
             deleteToken();
             deleteLocalStorage("user");
-            // navigation.navigate("Orders");
+            navigation.navigate("Home");
           }}
           style={styles.signIn}
         >
@@ -50,8 +68,20 @@ export const Profile = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // paddingTop: 50,
+    flex: 1,
+    paddingVertical: 50,
+    justifyContent: "space-between",
+  },
+  imageContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  orderImage: {
+    width: 100,
+    height: 100,
+    alignSelf: "center",
+    borderRadius: 50,
   },
   button: {
     alignItems: "center",
@@ -73,4 +103,9 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   label: {},
+  name: {
+    fontSize: 20,
+    paddingHorizontal: 50,
+    paddingVertical: 4,
+  },
 });

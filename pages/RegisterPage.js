@@ -48,10 +48,10 @@ export const RegisterPage = ({ navigation }) => {
   } = data;
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      //For admin
-      navigation.navigate("Shop", { screen: "Shop" });
-    }
+    // if (isAuthenticated()) {
+    //For admin
+    // navigation.navigate("Shop", { screen: "Shop" });
+    // }
   }, []);
 
   const textInputChange = (val) => {
@@ -160,6 +160,8 @@ export const RegisterPage = ({ navigation }) => {
             loading: false,
             successMsg: response.data.successMessage,
           });
+
+          navigation.navigate("Login");
         })
         .catch((err) => {
           console.log("signup error", err);

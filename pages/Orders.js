@@ -12,6 +12,9 @@ import {
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useEffect } from "react";
 import { apiObject } from "./../api/auth";
+import { getLocalStorage } from "../helpers/localStorage";
+import { BaseImageUrl } from "../helpers/Constants";
+import { useIsFocused } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   ordersRow: {
@@ -36,16 +39,31 @@ const OrderRow = ({ order }) => {
   return (
     <View style={styles.ordersRow}>
       <View style={styles.headerRowItem}>
-        <Image style={styles.orderImage} source={order.image} />
+        {order && (
+          <Image
+            style={styles.orderImage}
+            source={{ uri: BaseImageUrl + order.orderdProducts[0].fileName }}
+          />
+        )}
       </View>
       <View style={styles.headerRowItem}>
-        <Text>{order.title}</Text>
+        <Text>
+          {order.orderdProducts.map(
+            (product) =>
+              product.productName + "(" + product.productQuantity + ")\n"
+          )}
+        </Text>
       </View>
       <View style={styles.headerRowItem}>
-        <Text>$ {order.price}</Text>
+        <Text>
+          ${" "}
+          {order.orderdProducts
+            .map((product) => product.productQuantity * product.productPrice)
+            .reduce((sum, item) => sum + item)}
+        </Text>
       </View>
       <View style={styles.headerRowItem}>
-        <Text>{order.status}</Text>
+        <Text>{order.orderStatus}</Text>
       </View>
     </View>
   );
@@ -67,17 +85,36 @@ const OrderRow = ({ order }) => {
 
 export const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
-  const user = { _id: "63333e15df7678d1e1224fad" };
-  useEffect(() => {
+
+  const loadOrders = async () => {
+    const user = await getLocalStorage("user");
     apiObject
       .post("api/order/userspecificorders", user)
       .then(async (response) => {
-        setOrders(response.data.orders);
+        // setOrders(response.data.orders);
+
+        let orders = response.data.orders.map((order) => {
+          let products = JSON.parse(order.orderdProducts);
+          let shipping = JSON.parse(order.shippingDetails);
+          return {
+            ...order,
+            orderdProducts: products,
+            shippingDetails: shipping,
+          };
+        });
+
+        console.log(orders[0].orderdProducts);
+        setOrders(orders);
       })
       .catch((err) => {
         console.log(err);
       });
-  });
+  };
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    loadOrders();
+  }, [isFocused]);
   const isDarkMode = useColorScheme() === "dark";
 
   const backgroundStyle = {

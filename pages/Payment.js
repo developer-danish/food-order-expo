@@ -6,10 +6,13 @@ import {
   TextInputBase,
   TextInput,
   Button,
+  Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RadioGroup from "react-native-radio-buttons-group";
 import { apiObject } from "./../api/auth";
+import { useIsFocused } from "@react-navigation/native";
+import { getLocalStorage } from "../helpers/localStorage";
 
 export const Payment = ({ navigation }) => {
   const [radioButtons, setRadioButtons] = useState([
@@ -40,46 +43,50 @@ export const Payment = ({ navigation }) => {
       },
     },
   ]);
+  const [paymentData, setPaymentData] = useState({ paymentMethod: "POD" });
+
+  useEffect(() => {
+    loadPaymentData();
+  }, []);
+
+  const loadPaymentData = async () => {
+    let payment = {};
+    let address = await getLocalStorage("address");
+    let cart = await getLocalStorage("cart");
+    let user = await getLocalStorage("user");
+    if (address) {
+      payment = { ...payment, shippingAddress: address };
+    }
+    if (cart) {
+      cart = [].concat(
+        cart.map((item) => {
+          return { ...item, count: item.productQuantity };
+        })
+      );
+      payment = { ...payment, cart: cart };
+    }
+    if (user) {
+      payment = { ...payment, user: user };
+    }
+    setPaymentData({ ...paymentData, ...payment });
+  };
 
   function onPressRadioButton(radioButtonsArray) {
     setRadioButtons(radioButtonsArray);
   }
 
   const paymentSubmit = () => {
-    const data = {
-      shippingAddress: {
-        address: "danish.........",
-        address2: "lalpora",
-        city: "Srinagar",
-        state: "Jammu and Kashmir",
-        phone: "06005203360",
-      },
-      cart: [
-        {
-          _id: "639eb8bc1d458ead0bdf9f2a",
-          fileName: "1671346364977.jpg",
-          productName: "Burger",
-          productDesc: "Delicious Food",
-          productCategory: "62ff2c5c0e681cda4b03c524",
-          productQuantity: 12,
-          productPrice: 2,
-          createdAt: "2022-12-18T06:52:45.009Z",
-          updatedAt: "2022-12-18T06:52:45.009Z",
-          __v: 0,
-          count: 10,
-        },
-      ],
-      paymentMethod: "POD",
-      user: { _id: "63333e15df7678d1e1224fad" },
-    };
+    let payData = { ...paymentData };
+    delete payData.shippingAddress.errorMsg;
     apiObject
-      .post("api/order", data)
+      .post("api/order", payData)
       .then(async (response) => {
         navigation.navigate("Orders");
       })
       .catch((err) => {
         console.log(err);
       });
+    console.log(payData);
   };
   return (
     <View style={styles.container}>
@@ -102,6 +109,8 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     marginTop: 50,
+    justifyContent: "space-between",
+    height: Dimensions.get("window").height * 0.7,
   },
   signIn: {
     width: "90%",

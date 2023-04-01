@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Animatable from "react-native-animatable";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { useState } from "react";
 import isEmpty from "validator/lib/isEmpty";
 import { showErrorMsg } from "./../helpers/message";
+import { useIsFocused } from "@react-navigation/native";
+import { getLocalStorage, setLocalStorage } from "../helpers/localStorage";
 
 export const Shipping = ({ navigation }) => {
   const [data, setData] = useState({
@@ -23,6 +25,28 @@ export const Shipping = ({ navigation }) => {
     phone: "",
     errorMsg: false,
   });
+
+  const loadShippingData = async () => {
+    let data = await getLocalStorage("address");
+    console.log(data);
+    if (data) {
+      setData(data);
+    } else {
+      setData({
+        address: "",
+        address2: "",
+        city: "",
+        state: "",
+        phone: "",
+        errorMsg: "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    loadShippingData();
+  }, []);
+
   const { address, address2, city, state, phone, errorMsg } = data;
 
   const textChange = (name, val) => {
@@ -47,6 +71,7 @@ export const Shipping = ({ navigation }) => {
         errorMsg: "All fields are required",
       });
     } else {
+      setLocalStorage("address", data);
       setData({
         address: "",
         address2: "",
@@ -55,6 +80,7 @@ export const Shipping = ({ navigation }) => {
         phone: "",
         errorMsg: "",
       });
+
       navigation.navigate("Payment");
     }
   };
