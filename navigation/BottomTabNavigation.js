@@ -104,6 +104,7 @@ export const BottomTabNavigation = ({ navigation }) => {
       <Tab.Screen
         name={isLogin ? "Profile" : "Login"}
         component={isLogin ? Profile : AuthNavigation}
+        options={{ headerShown: isLogin }}
         listeners={{
           tabPress: checkLogin,
         }}

@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import RadioGroup from "react-native-radio-buttons-group";
 import { apiObject } from "./../api/auth";
 import { useIsFocused } from "@react-navigation/native";
-import { getLocalStorage } from "../helpers/localStorage";
+import { getLocalStorage, setLocalStorage } from "../helpers/localStorage";
 
 export const Payment = ({ navigation }) => {
   const [radioButtons, setRadioButtons] = useState([
@@ -81,6 +81,7 @@ export const Payment = ({ navigation }) => {
     apiObject
       .post("api/order", payData)
       .then(async (response) => {
+        setLocalStorage("cart", []);
         navigation.navigate("Orders");
       })
       .catch((err) => {
