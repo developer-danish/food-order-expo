@@ -94,13 +94,15 @@ export const BottomTabNavigation = ({ navigation }) => {
           tabBarBadge: 5,
         }}
       />
-      <Tab.Screen
-        name="Orders"
-        component={OrdersPage}
-        listeners={{
-          tabPress: checkLogin,
-        }}
-      />
+      {isLogin && (
+        <Tab.Screen
+          name="Orders"
+          component={OrdersPage}
+          listeners={{
+            tabPress: checkLogin,
+          }}
+        />
+      )}
       <Tab.Screen
         name={isLogin ? "Profile" : "Login"}
         component={isLogin ? Profile : AuthNavigation}
